@@ -138,14 +138,6 @@ export default function MintNFT() {
                 style={{}}
                 theme="withIcon"
             />
-            <Button
-                color="green"
-                onClick={function noRefCheck() {
-                    pinFileToIPFS(image)
-                }}
-                text="Upload Image"
-                theme="colored"
-            />
             <Input
                 // description="Enter name of the NFT"
                 label="NFT Name"
