@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./NFT.sol";
 
 error NotOwner();
 
@@ -14,7 +15,7 @@ error NftMarketPlace__AlreadyListed(address nftAddress, uint256 tokenId);
 error NftMarketPlace__PriceNotMet(address nftAddress, uint256 tokenId, uint256 nftPrice);
 error NftMarketPlace__NoProceeds();
 
-contract Nft_Marketplace is ReentrancyGuard{
+contract NftMarketplace is ReentrancyGuard{
     struct Listing{
         address seller;
         uint256 price;
@@ -90,7 +91,12 @@ contract Nft_Marketplace is ReentrancyGuard{
         if (msg.value < listedItem.price) {
             revert NftMarketPlace__PriceNotMet(nftAddress, tokenId, listedItem.price);
         }
-        s_proceeds[listedItem.seller] += msg.value;
+        uint256 royality = msg.value * PERCENT_OF_ROYALITY / 100;
+        address creator = NFT(nftAddress).getCreator(tokenId);
+        
+        s_proceeds[listedItem.seller] += msg.value - royality;
+        s_proceeds[creator] += royality;
+
 
         delete (s_listings[nftAddress][tokenId]);
         IERC721(nftAddress).safeTransferFrom(listedItem.seller, msg.sender, tokenId);

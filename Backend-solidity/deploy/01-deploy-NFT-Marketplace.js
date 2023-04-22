@@ -13,7 +13,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const args = [percentageOfRoyality]
 
     log("----------------")
-    const nftMarketplace = await deploy("Nft_Marketplace", {
+    const nftMarketplace = await deploy("NftMarketplace", {
         from: deployer,
         args: args,
         log: true,
@@ -26,4 +26,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     }
 }
 
-module.exports.tags = ["all", "basicnft", "main"]
+module.exports.tags = ["all", "nftMarketplace", "main"]

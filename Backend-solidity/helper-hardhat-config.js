@@ -16,10 +16,18 @@ const networkConfig = {
     11155111: {
         name: "sepolia",
     },
+    80001: {
+        name: "polygonMumbai",
+    },
 }
 const developmentChains = ["hardhat", "localhost"]
+
+const frontEndAbiLocation = "../Frontend/nft_marketplace/constants/abi/"
+const frontEndContractAddresses = "../Frontend/nft_marketplace/constants/addressMapping/contractAddressess.json"
 
 module.exports = {
     networkConfig,
     developmentChains,
+    frontEndAbiLocation,
+    frontEndContractAddresses,
 }

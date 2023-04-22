@@ -5,10 +5,12 @@ require("dotenv").config()
 
 const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL
+const POLYGON_MUMBAI_RPC_URL = process.env.POLYGON_MUMBAI_RPC_URL
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -37,12 +39,20 @@ module.exports = {
             saveDeployments: true,
             chainId: 11155111,
         },
+        polygonMumbai: {
+            url: POLYGON_MUMBAI_RPC_URL,
+            accounts: [PRIVATE_KEY],
+            blockConfirmations: 6,
+            saveDeployments: true,
+            chainId: 80001,
+        },
     },
     etherscan: {
         // yarn hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
         apiKey: {
             goerli: ETHERSCAN_API_KEY,
             sepolia: ETHERSCAN_API_KEY,
+            polygonMumbai: POLYGONSCAN_API_KEY,
         },
         customChains: [
             {
