@@ -1,31 +1,10 @@
-import { ethers } from "ethers"
+import { ethers, toNumber } from "ethers"
+import { nftAbi } from "@/constants"
 
-async function GetTokenPriceUtil(contractAddress, contractAbi, runContractFunction, tokenId) {
-    const getTokenPriceOpt = {
-        abi: contractAbi,
-        contractAddress: contractAddress,
-        functionName: "getTokenPrice",
-        params: { tokenId },
-    }
-    const tokenPriceInWei = await runContractFunction({
-        params: getTokenPriceOpt,
-        onSuccess: (result) => {
-            console.log("tokenPrice: ", result)
-        },
-        onError: (error) => {
-            console.log("error: ", error)
-        },
-    })
-
-    const tokenPriceInEth = ethers.utils.formatEther(tokenPriceInWei)
-    console.log("tokenPriceInEth: ", tokenPriceInEth)
-    return tokenPriceInEth
-}
-
-async function GetTokenUriUtil(contractAddress, contractAbi, runContractFunction, tokenId) {
+async function GetTokenUriUtil(nftAddress, runContractFunction, tokenId) {
     const getTokenURIOpt = {
-        abi: contractAbi,
-        contractAddress: contractAddress,
+        abi: nftAbi,
+        contractAddress: nftAddress,
         functionName: "tokenURI",
         params: { tokenId },
     }
@@ -41,10 +20,31 @@ async function GetTokenUriUtil(contractAddress, contractAbi, runContractFunction
     return tokenURI
 }
 
-async function GetTokenOwnerUtil(contractAddress, contractAbi, runContractFunction, tokenId) {
+async function GetTokenCounterUtil(nftAddress, runContractFunction) {
+    const getTokenCounterOpt = {
+        abi: nftAbi,
+        contractAddress: nftAddress,
+        functionName: "s_tokenCounter",
+        params: {},
+    }
+
+    const tokenId = await runContractFunction({
+        params: getTokenCounterOpt,
+
+        onError: (error) => {
+            console.log("error: ", error)
+        },
+    })
+
+    console.log("tokenId: ", tokenId)
+
+    return tokenId
+}
+
+async function GetTokenOwnerUtil(nftAddress, runContractFunction, tokenId) {
     const getTokenOwnerOpt = {
-        abi: contractAbi,
-        contractAddress: contractAddress,
+        abi: nftAbi,
+        contractAddress: nftAddress,
         functionName: "ownerOf",
         params: { tokenId },
     }
@@ -60,10 +60,10 @@ async function GetTokenOwnerUtil(contractAddress, contractAbi, runContractFuncti
     return tokenOwner
 }
 
-async function GetTokenCreatorUtil(contractAddress, contractAbi, runContractFunction, tokenId) {
+async function GetTokenCreatorUtil(nftAddress, runContractFunction, tokenId) {
     const getTokenCreatorOpt = {
-        abi: contractAbi,
-        contractAddress: contractAddress,
+        abi: nftAbi,
+        contractAddress: nftAddress,
         functionName: "tokenCreator",
         params: { tokenId },
     }
@@ -79,22 +79,12 @@ async function GetTokenCreatorUtil(contractAddress, contractAbi, runContractFunc
     return tokenCreator
 }
 
-async function MintNftUtil(
-    contractAddress,
-    contractAbi,
-    runContractFunction,
-    tokenUri,
-    tokenPrice,
-    onMintSuccess,
-    onMintFail
-) {
-    const tokenPriceInWei = ethers.utils.parseEther(tokenPrice)
-    console.log("tokenPriceInWei: ", tokenPriceInWei)
+async function MintNftUtil(nftAddress, runContractFunction, tokenUri, onMintSuccess, onMintFail) {
     const mintNftOpt = {
-        abi: contractAbi,
-        contractAddress: contractAddress,
+        abi: nftAbi,
+        contractAddress: nftAddress,
         functionName: "mintNFT",
-        params: { tokenUri: tokenUri, tokenPrice: tokenPriceInWei },
+        params: { tokenUri: tokenUri },
     }
     const txReciept = await runContractFunction({
         params: mintNftOpt,
@@ -104,7 +94,13 @@ async function MintNftUtil(
             console.log("error: ", error)
         },
     })
-    console.log("txReciept: ", txReciept)
+    return txReciept
 }
 
-module.exports = { GetTokenPriceUtil, GetTokenUriUtil, GetTokenOwnerUtil, GetTokenCreatorUtil, MintNftUtil }
+module.exports = {
+    GetTokenUriUtil,
+    GetTokenOwnerUtil,
+    GetTokenCreatorUtil,
+    MintNftUtil,
+    GetTokenCounterUtil,
+}

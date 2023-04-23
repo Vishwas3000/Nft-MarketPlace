@@ -2,7 +2,13 @@ import "@/styles/globals.css"
 import { MoralisProvider } from "react-moralis"
 import { Notification, NotificationProvider } from "web3uikit"
 import Header from "../components/Header"
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client"
 import Head from "next/head"
+
+const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    uri: `https://api.studio.thegraph.com/query/43153/tasknft-marketplace/v0.0.2`,
+})
 
 export default function App({ Component, pageProps }) {
     return (
@@ -14,10 +20,12 @@ export default function App({ Component, pageProps }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MoralisProvider initializeOnMount={false}>
-                <NotificationProvider>
-                    <Header />
-                    <Component {...pageProps} />
-                </NotificationProvider>
+                <ApolloProvider client={client}>
+                    <NotificationProvider>
+                        <Header />
+                        <Component {...pageProps} />
+                    </NotificationProvider>
+                </ApolloProvider>
             </MoralisProvider>
         </div>
     )

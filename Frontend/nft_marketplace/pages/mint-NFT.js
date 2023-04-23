@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { Button, Upload, Input, useNotification } from "web3uikit"
-import { MintNftUtil } from "../utils/NftUtils"
-import axios from "axios"
+import { MintNftUtil, GetTokenCounterUtil } from "../utils/NftUtils"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import { contractAddresses, nftAbi } from "../constants"
+import { contractAddresses } from "../constants"
+import axios from "axios"
 
 const metadataTemplate = {
     name: "",
@@ -25,13 +25,17 @@ export default function MintNFT() {
     const [image, setImage] = useState(null)
     const [nftName, setNftName] = useState("")
     const [nftDescription, setNftDescription] = useState("")
-    const [nftPrice, setNftPrice] = useState("")
     const [isMinting, setIsMinting] = useState(false)
+    const [currentTokenCount, setCurrentTokenCount] = useState(0)
 
     const chainIdString = chainId ? parseInt(chainId).toString() : "31337"
 
     const nftAddress = contractAddresses[chainIdString]["NFT"]
     console.log("nftAddress: ", nftAddress)
+
+    useEffect(() => {
+        GetTokenId()
+    }, [isWeb3Enabled, chainId, isMinting])
 
     const rename = (name) => {
         let temp = name
@@ -102,7 +106,7 @@ export default function MintNFT() {
 
         tokenUriMetadata.name = nftName
         tokenUriMetadata.description = nftDescription
-        tokenUriMetadata.image = `ipfs://${ipfsImageData.IpfsHash}`
+        tokenUriMetadata.image = `https://ipfs.io/ipfs/${ipfsImageData.IpfsHash}`
 
         let metadataToUpload = {
             pinataOptions: {
@@ -144,10 +148,15 @@ export default function MintNFT() {
 
     const handleMintToken = async () => {
         setIsMinting(true)
-        const tokenUri = await uploadTokenUri()
-
+        let tokenUri = await uploadTokenUri()
+        tokenUri = `ipfs://${tokenUri}`
         console.log("tokenUri: ", tokenUri)
-        await MintNftUtil(nftAddress, nftAbi, runContractFunction, tokenUri, nftPrice, onMintSuccess, onMintFailed)
+        await MintNftUtil(nftAddress, runContractFunction, tokenUri, onMintSuccess, onMintFailed)
+    }
+
+    const GetTokenId = async () => {
+        const tokenCount = await GetTokenCounterUtil(nftAddress, runContractFunction)
+        setCurrentTokenCount(tokenCount)
     }
 
     const onIpfsSuccess = async (data) => {
@@ -177,7 +186,7 @@ export default function MintNFT() {
             type: "success",
             title: "Minted successfully",
             position: "topR",
-            message: "Your NFT has been minted successfully",
+            message: `Your NFT successfully minted ID: ${currentTokenCount}`,
         })
         setIsMinting(false)
     }
@@ -209,28 +218,24 @@ export default function MintNFT() {
                     theme="withIcon"
                 />
             </div>
-            <Input
-                // description="Enter name of the NFT"
-                label="NFT Name"
-                name="Test text Input"
-                onChange={(event) => {
-                    setNftName(event.target.value)
-                }}
-            />
-            <Input
-                // description="Enter description of the NFT"
-                label="NFT Description"
-                name="Test text Input"
-                onChange={(event) => {
-                    setNftDescription(event.target.value)
-                }}
-            />
-            <Input
-                label="NFT Price"
-                onChange={(event) => {
-                    setNftPrice(event.target.value)
-                }}
-            />
+            <div className=" flex flex-col justify-start space-y-5">
+                <Input
+                    // description="Enter name of the NFT"
+                    label="NFT Name"
+                    name="Test text Input"
+                    onChange={(event) => {
+                        setNftName(event.target.value)
+                    }}
+                />
+                <Input
+                    // description="Enter description of the NFT"
+                    label="NFT Description"
+                    name="Test text Input"
+                    onChange={(event) => {
+                        setNftDescription(event.target.value)
+                    }}
+                />
+            </div>
             <div className=" py-10">
                 <Button
                     color="green"
