@@ -3,12 +3,14 @@ import { Card } from "web3uikit"
 import { useState, useEffect } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { contractAddresses } from "@/constants"
+import ListingModal from "@/components/ListingModal"
 import Image from "next/image"
 
 export default function NftCard({ tokenId }) {
     const { isWeb3Enabled, account, chainId } = useMoralis()
 
     const chainIdString = chainId ? parseInt(chainId).toString() : "31337"
+    const marketplaceAddress = contractAddresses[chainIdString]["NftMarketplace"]
     const nftAddress = contractAddresses[chainIdString]["NFT"]
 
     const [imageURI, setImageUri] = useState("")
@@ -41,12 +43,7 @@ export default function NftCard({ tokenId }) {
 
     const handleCardClick = () => {
         console.log(`Clicked on ${tokenName}!`)
-        isOwnedByUser
-            ? setShowModal(true)
-            : buyItem({
-                  onError: (error) => console.log(error),
-                  onSuccess: handleBuyItemSuccess,
-              })
+        setShowModal(true)
     }
 
     useEffect(() => {
@@ -57,15 +54,28 @@ export default function NftCard({ tokenId }) {
 
     return (
         <div>
-            <Card title={tokenName} description={tokenDescription} onClick={handleCardClick}>
-                <div className="p-2">
-                    <div className="flex flex-col items-end gap-2">
-                        <div>#{tokenId}</div>
-                        <div className="italic text-sm">Owned by {"you"}</div>
-                        <Image loader={() => imageURI} src={imageURI} height="200" width="200" />
-                    </div>
+            {imageURI ? (
+                <div>
+                    <ListingModal
+                        nftAddress={nftAddress}
+                        tokenId={tokenId}
+                        isVisible={showModal}
+                        marketplaceAddress={marketplaceAddress}
+                        onClose={hideModal}
+                    />
+                    <Card title={tokenName} description={tokenDescription} onClick={handleCardClick}>
+                        <div className="p-2">
+                            <div className="flex flex-col items-end gap-2">
+                                <div>#{tokenId}</div>
+                                <div className="italic text-sm">Owned by {"you"}</div>
+                                <Image loader={() => imageURI} src={imageURI} height="200" width="200" />
+                            </div>
+                        </div>
+                    </Card>
                 </div>
-            </Card>
+            ) : (
+                <div>Loading...</div>
+            )}
         </div>
     )
 }

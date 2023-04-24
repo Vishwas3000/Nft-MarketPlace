@@ -2,19 +2,24 @@ import { useEffect, useState } from "react"
 import { contractAddresses } from "@/constants"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { Button, Input, Card, useNotification } from "web3uikit"
-import { GetTokenUriUtil } from "../utils/NftUtils"
+import { GetTokenOwnerUtil } from "../utils/NftUtils"
 import NftCard from "@/components/NftCard"
 
 export default function Home() {
-    const { isWeb3Enabled, chainId } = useMoralis()
+    const { account, chainId } = useMoralis()
     const { runContractFunction } = useWeb3Contract()
 
     const [tokenId, setTokenId] = useState(0)
-    const [tokenIds, setTokenIds] = useState([0])
+    const [tokenIds, setTokenIds] = useState([])
 
     const chainIdString = chainId ? parseInt(chainId).toString() : "31337"
     const nftAddress = contractAddresses[chainIdString]["NFT"]
     console.log("tokenIds: ", tokenIds)
+
+    async function getTokenOwner() {
+        const tokenOwner = await GetTokenOwnerUtil(nftAddress, runContractFunction, tokenId)
+        return tokenOwner
+    }
 
     return (
         <div className=" p-10 space-y-5">
@@ -25,8 +30,15 @@ export default function Home() {
                 }}
             />
             <Button
-                onClick={() => {
-                    setTokenIds((prevTokens) => [...prevTokens, parseInt(tokenId)])
+                onClick={async () => {
+                    const tokenOwner = await getTokenOwner()
+
+                    const isOwnedByUser = tokenOwner.toLowerCase() === account.toLowerCase()
+                    if (isOwnedByUser) {
+                        setTokenIds((prevTokens) => [...prevTokens, parseInt(tokenId)])
+                    } else {
+                        alert("You do not own this token!")
+                    }
                 }}
                 theme="colored"
                 color="blue"

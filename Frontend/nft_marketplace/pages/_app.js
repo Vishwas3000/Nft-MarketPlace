@@ -7,7 +7,7 @@ import Head from "next/head"
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
-    uri: `https://api.studio.thegraph.com/query/43153/tasknft-marketplace/v0.0.2`,
+    uri: `https://api.studio.thegraph.com/query/43153/tasknft-marketplace/v0.0.3`,
 })
 
 export default function App({ Component, pageProps }) {

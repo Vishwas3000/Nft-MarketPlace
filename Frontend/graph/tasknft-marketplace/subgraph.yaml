@@ -6,9 +6,9 @@ dataSources:
     name: NftMarketplace
     network: mumbai
     source:
-      address: "0x5c570C8604e351665090c6D1F44461A4A7Ca3416"
+      address: "0xB92D304D6Db1831e424e025fba4AC57497a6348A"
       abi: NftMarketplace
-      startBlock: 34690393
+      startBlock: 34729483
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

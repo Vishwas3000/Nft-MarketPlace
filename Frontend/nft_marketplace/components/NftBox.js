@@ -4,6 +4,8 @@ import { Card, useNotification } from "web3uikit"
 import { ethers } from "ethers"
 import UpdateListingModal from "./UpdateListingModal"
 import { GetTokenUriUtil } from "../utils/NftUtils"
+import Image from "next/image"
+import { buyItemUtil } from "@/utils/marketplaceUtil"
 
 const truncateStr = (fullStr, strLen) => {
     if (fullStr.length <= strLen) return fullStr
@@ -33,14 +35,28 @@ export default function NftBox({ price, nftAddress, tokenId, marketplaceAddress,
         if (tokenUri) {
             const requestURL = tokenUri.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/")
             const tokenUriResponse = await (await fetch(requestURL)).json()
-            const imageUri = tokenUriResponse.image
+            const imageUri = tokenUriResponse.tokenUriMetadata.image
 
             const imageUriUrl = imageUri.replace("https://ipfs.io/ipfs/", "https://cloudflare-ipfs.com/ipfs/")
 
             setImageUri(imageUriUrl)
-            setTokenName(tokenUriResponse.name)
-            setTokenDescription(tokenUriResponse.description)
+            setTokenName(tokenUriResponse.tokenUriMetadata.name)
+            setTokenDescription(tokenUriResponse.tokenUriMetadata.description)
         }
+    }
+
+    async function buyItem() {
+        // console.log("Price: ", price)
+        const priceInEth = ethers.utils.formatEther(price.toString())
+        console.log("Price in Eth: ", priceInEth)
+        await buyItemUtil(
+            marketplaceAddress,
+            runContractFunction,
+            nftAddress,
+            tokenId,
+            priceInEth,
+            handleBuyItemSuccess
+        )
     }
 
     useEffect(() => {
@@ -54,12 +70,7 @@ export default function NftBox({ price, nftAddress, tokenId, marketplaceAddress,
 
     const handleCardClick = () => {
         console.log(`Clicked on ${tokenName}!`)
-        isOwnedByUser
-            ? setShowModal(true)
-            : buyItem({
-                  onError: (error) => console.log(error),
-                  onSuccess: handleBuyItemSuccess,
-              })
+        isOwnedByUser ? setShowModal(true) : buyItem()
     }
 
     const handleBuyItemSuccess = async (tx) => {

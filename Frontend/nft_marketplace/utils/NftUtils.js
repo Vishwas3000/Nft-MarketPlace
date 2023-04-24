@@ -20,6 +20,25 @@ async function GetTokenUriUtil(nftAddress, runContractFunction, tokenId) {
     return tokenURI
 }
 
+async function ApproveTokenUtil(nftAddress, runContractFunction, toAddress, tokenId, onSuccess) {
+    const approveTokenOpt = {
+        abi: nftAbi,
+        contractAddress: nftAddress,
+        functionName: "approve",
+        params: { to: toAddress, tokenId },
+    }
+
+    const txReciept = await runContractFunction({
+        params: approveTokenOpt,
+        onSuccess: onSuccess,
+        onError: (error) => {
+            console.log("error: ", error)
+        },
+    })
+
+    return txReciept
+}
+
 async function GetTokenCounterUtil(nftAddress, runContractFunction) {
     const getTokenCounterOpt = {
         abi: nftAbi,
@@ -103,4 +122,5 @@ module.exports = {
     GetTokenCreatorUtil,
     MintNftUtil,
     GetTokenCounterUtil,
+    ApproveTokenUtil,
 }

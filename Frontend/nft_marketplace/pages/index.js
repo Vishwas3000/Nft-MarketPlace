@@ -21,20 +21,18 @@ export default function Home() {
                     loading || !listedNfts ? (
                         <div>Loading...</div>
                     ) : (
-                        listedNfts.activeItems.map((nft) => {
-                            console.log(nft)
-                            const { price, nftAddress, tokenId, seller } = nft
-                            return (
+                        <div className="grid grid-cols-5 gap-6 p-10 ">
+                            {listedNfts.activeItems.map((nft) => (
                                 <NftBox
-                                    price={price}
-                                    nftAddress={nftAddress}
-                                    tokenId={tokenId}
+                                    price={nft.price}
+                                    nftAddress={nft.nftAddress}
+                                    tokenId={nft.tokenId}
                                     marketplaceAddress={marketPlaceAddress}
-                                    seller={seller}
-                                    key={`${nftAddress}${tokenId}`}
+                                    seller={nft.seller}
+                                    key={`${nft.nftAddress}${nft.tokenId}`}
                                 />
-                            )
-                        })
+                            ))}
+                        </div>
                     )
                 ) : (
                     <div>Web3 Currently Not Enabled</div>
