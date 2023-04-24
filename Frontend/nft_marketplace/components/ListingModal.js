@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useWeb3Contract } from "react-moralis"
 import { listItemUtil } from "../utils/marketplaceUtil"
 import { ApproveTokenUtil, checkIfApprovedUtil } from "../utils/NftUtils"
+import { BLOCK_WAIT_TIME } from "@/constants"
 
 export default function ListingModal({ nftAddress, tokenId, isVisible, marketplaceAddress, onClose }) {
     const dispatch = useNotification()
@@ -12,7 +13,7 @@ export default function ListingModal({ nftAddress, tokenId, isVisible, marketpla
     const [ifApproved, setIfApproved] = useState(false)
 
     const handleListingSuccess = async (tx) => {
-        await tx.wait(1)
+        await tx.wait(BLOCK_WAIT_TIME)
         dispatch({
             type: "success",
             message: "Item listed!",
@@ -40,7 +41,7 @@ export default function ListingModal({ nftAddress, tokenId, isVisible, marketpla
     }
 
     const handleApproveSuccess = async (tx) => {
-        await tx.wait(1)
+        await tx.wait(BLOCK_WAIT_TIME)
         dispatch({
             type: "success",
             message: "NFT approved!",

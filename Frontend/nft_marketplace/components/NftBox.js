@@ -6,6 +6,7 @@ import UpdateListingModal from "./UpdateListingModal"
 import { GetTokenUriUtil } from "../utils/NftUtils"
 import Image from "next/image"
 import { buyItemUtil } from "@/utils/marketplaceUtil"
+import { BLOCK_WAIT_TIME } from "@/constants"
 
 const truncateStr = (fullStr, strLen) => {
     if (fullStr.length <= strLen) return fullStr
@@ -74,7 +75,7 @@ export default function NftBox({ price, nftAddress, tokenId, marketplaceAddress,
     }
 
     const handleBuyItemSuccess = async (tx) => {
-        await tx.wait(1)
+        await tx.wait(BLOCK_WAIT_TIME)
         dispatch({
             type: "success",
             message: "Item bought!",

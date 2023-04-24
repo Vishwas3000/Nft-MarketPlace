@@ -2,6 +2,7 @@ import { Modal, Input, useNotification } from "web3uikit"
 import { useState } from "react"
 import { useWeb3Contract } from "react-moralis"
 import { updateListingUtil } from "../utils/marketplaceUtil"
+import { BLOCK_WAIT_TIME } from "@/constants"
 
 export default function UpdateListingModal({ nftAddress, tokenId, isVisible, marketplaceAddress, onClose }) {
     const dispatch = useNotification()
@@ -10,7 +11,7 @@ export default function UpdateListingModal({ nftAddress, tokenId, isVisible, mar
     const [priceToUpdateListingWith, setPriceToUpdateListingWith] = useState(0)
 
     const handleUpdateListingSuccess = async (tx) => {
-        await tx.wait(1)
+        await tx.wait(BLOCK_WAIT_TIME)
         dispatch({
             type: "success",
             message: "listing updated",

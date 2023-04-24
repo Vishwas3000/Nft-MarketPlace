@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Upload, Input, useNotification } from "web3uikit"
 import { MintNftUtil, GetTokenCounterUtil } from "../utils/NftUtils"
 import { useMoralis, useWeb3Contract } from "react-moralis"
-import { contractAddresses } from "../constants"
+import { contractAddresses, BLOCK_WAIT_TIME } from "../constants"
 import axios from "axios"
 
 const metadataTemplate = {
@@ -181,6 +181,7 @@ export default function MintNFT() {
     }
 
     const onMintSuccess = async (tx) => {
+        tx.wait(BLOCK_WAIT_TIME)
         console.log("Minted successfully")
         dispatch({
             type: "success",
