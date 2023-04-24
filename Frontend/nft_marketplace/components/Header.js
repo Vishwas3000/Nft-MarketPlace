@@ -12,8 +12,11 @@ export default function Header() {
                 <Link href="/mint-NFT" className="mr-4 p-6">
                     Mint
                 </Link>
-                <Link href="/dashboard" className="mr-4 p-6">
-                    My Dashboard
+                <Link href="/owned-NFT" className="mr-4 p-6">
+                    Owned NFT
+                </Link>
+                <Link href="/created-NFT" className="mr-4 p-6">
+                    Created NFT
                 </Link>
                 <ConnectButton moralisAuth={false} />
             </div>

@@ -83,7 +83,7 @@ async function GetTokenCreatorUtil(nftAddress, runContractFunction, tokenId) {
     const getTokenCreatorOpt = {
         abi: nftAbi,
         contractAddress: nftAddress,
-        functionName: "tokenCreator",
+        functionName: "getCreator",
         params: { tokenId },
     }
     const tokenCreator = await runContractFunction({

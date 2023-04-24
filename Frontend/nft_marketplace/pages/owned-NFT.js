@@ -43,6 +43,7 @@ export default function Home() {
                 theme="colored"
                 color="blue"
             />
+            <div className="py-4 px-4 font-bold text-2xl">Current Owned Tokens</div>
             <div className="grid grid-cols-5 gap-6">
                 {tokenIds.map((tokenId) => (
                     <NftCard tokenId={tokenId} />

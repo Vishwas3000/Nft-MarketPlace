@@ -80,7 +80,7 @@ async function updateListingUtil(marketplaceAddress, runContractFunction, nftAdd
     return txReciept
 }
 
-async function withdrawProceedsUtil(marketplaceAddress, runContractFunction, account, onSuccess) {
+async function withdrawProceedsUtil(marketplaceAddress, runContractFunction, onSuccess) {
     const withdrawProceedsOpt = {
         abi: nftMarketplaceAbi,
         contractAddress: marketplaceAddress,
@@ -99,4 +99,27 @@ async function withdrawProceedsUtil(marketplaceAddress, runContractFunction, acc
     return txReciept
 }
 
-module.exports = { listItemUtil, buyItemUtil, cancleItemUtil, updateListingUtil, withdrawProceedsUtil }
+async function getProceedsUtil(marketplaceAddress, runContractFunction, account, onSuccess) {
+    const getProceedsOpt = {
+        abi: nftMarketplaceAbi,
+        contractAddress: marketplaceAddress,
+        functionName: "getProceeds",
+        params: { seller: account },
+    }
+
+    const proceedsInWei = await runContractFunction({
+        params: getProceedsOpt,
+        onSuccess: onSuccess,
+        onError: (error) => {
+            console.log("error: ", error)
+        },
+    })
+
+    console.log("proceedsInWei: ", proceedsInWei)
+
+    const proceeds = ethers.utils.formatEther(proceedsInWei)
+
+    return proceeds
+}
+
+module.exports = { listItemUtil, buyItemUtil, cancleItemUtil, updateListingUtil, withdrawProceedsUtil, getProceedsUtil }
