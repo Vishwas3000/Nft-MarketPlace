@@ -1,6 +1,9 @@
 # Nft-MarketPlace
 
+
 Website Link: (https://gomarket-nft.netlify.app/)
+Deployed in polygonMumbai test net
+
 
 Task Overview : Make Basic NFT marketplace ( Using solidity contracts and testnet Rinkeby or Matic Testnet )  Ex : Opensea.io
 
