@@ -5,6 +5,8 @@ https://user-images.githubusercontent.com/70902770/234127860-6d4cad87-e8ac-48d9-
 Website Link: (https://gomarket-nft.netlify.app/)
 Deployed in polygonMumbai test net
 
+used graphsubgraph to index and query the listed NFT in nft marketplace. (Will create a subgraph for NFT contract aswell)
+
 
 Task Overview : Make Basic NFT marketplace ( Using solidity contracts and testnet Rinkeby or Matic Testnet )  Ex : Opensea.io
 
